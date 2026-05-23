@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package magicbox.user.v1;
+
+option java_package = "kr.magicbox.user.grpc.user";
+option java_outer_classname = "UserServiceProto";
+option java_multiple_files = true;
+
+service UserService {
+  rpc LoadUserCredential(LoadUserCredentialRequest) returns (LoadUserCredentialResponse);
+  rpc CheckUserActive(CheckUserActiveRequest) returns (CheckUserActiveResponse);
+  rpc GetUserNickname(GetUserNicknameRequest) returns (GetUserNicknameResponse);
+}
+
+message LoadUserCredentialRequest {
+  string oauth2_id = 1;
+  GrpcOAuth2Provider provider = 2;
+  string email = 3;
+  string profile_image = 4;
+}
+
+message LoadUserCredentialResponse {
+  int64 user_id = 1;
+  GrpcUserRole user_role = 2;
+}
+
+message CheckUserActiveRequest {
+  int64 user_id = 1;
+}
+
+message CheckUserActiveResponse {
+  bool active = 1;
+}
+
+message GetUserNicknameRequest {
+  int64 user_id = 1;
+}
+
+message GetUserNicknameResponse {
+  string nickname = 1;
+}
+
+enum GrpcUserRole {
+  GRPC_USER_ROLE_UNSPECIFIED = 0;
+  USER = 1;
+  CREATOR = 2;
+  ADMIN = 3;
+}
+
+enum GrpcOAuth2Provider {
+  GRPC_OAUTH2_PROVIDER_UNSPECIFIED = 0;
+  GOOGLE = 1;
+  NAVER = 2;
+  KAKAO = 3;
+}

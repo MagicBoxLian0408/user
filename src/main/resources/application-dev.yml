@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: user-dev
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  grpc:
+    server:
+      port: ${GRPC_SERVER_PORT}
+    client:
+      channels:
+        review:
+          address: ${REVIEW_SERVICE_URL}
+          negotiation-type: plaintext
+          keep-alive-time: 30s
+          keep-alive-timeout: 5s
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    listener:
+      ack-mode: record
+      missing-topics-fatal: false
+    consumer:
+      group-id: user-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+security:
+  trusted:
+    ips:
+      - ${TRUSTED_IP_GATEWAY}
+
+user:
+  default-profile-image-url: ${USER_PROFILE_DEFAULT_IMAGE_URL}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      review:
+        register-health-indicator: true
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+  timelimiter:
+    instances:
+      review:
+        timeout-duration: 2s
+
+user:
+  default-profile-image-url: ${USER_PROFILE_DEFAULT_IMAGE_URL}
+
+inbox:
+  max-event-age-minutes: 5

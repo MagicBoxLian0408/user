@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package magicbox.review.v1;
+
+option java_package = "kr.magicbox.user.grpc.review";
+option java_outer_classname = "ReviewServiceProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+// Review 서비스 정의
+service ReviewService {
+  // 사용자 ID로 리뷰 목록 조회
+  rpc GetAllReviewsByUserId(GetAllReviewsByUserIdRequest) returns (GetAllReviewsByUserIdResponse);
+}
+
+// 요청 메시지
+message GetAllReviewsByUserIdRequest {
+  int64 user_id = 1;
+}
+
+// 응답 메시지
+message GetAllReviewsByUserIdResponse {
+  repeated Review reviews = 1;
+}
+
+// Review 메시지
+message Review {
+  int64 review_id = 1;
+  string content = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
