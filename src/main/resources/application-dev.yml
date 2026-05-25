@@ -59,8 +59,5 @@ resilience4j:
       review:
         timeout-duration: 2s
 
-user:
-  default-profile-image-url: ${USER_PROFILE_DEFAULT_IMAGE_URL}
-
 inbox:
   max-event-age-minutes: 5
