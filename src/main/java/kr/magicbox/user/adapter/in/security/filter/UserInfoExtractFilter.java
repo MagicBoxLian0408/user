@@ -14,6 +14,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RequiredArgsConstructor
 public class UserInfoExtractFilter extends OncePerRequestFilter {
 
@@ -22,6 +25,7 @@ public class UserInfoExtractFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
+        log.info("[UserInfoExtractFilter] clientIp={}, trustedIps={}", clientIp, trustedIpProperties.getIps());
 
         if (!trustedIpProperties.getIps().contains(clientIp)) {
             filterChain.doFilter(request, response);
