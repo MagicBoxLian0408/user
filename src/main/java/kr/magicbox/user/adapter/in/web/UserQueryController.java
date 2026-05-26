@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserQueryController {
     private final UserQueryUseCase userQueryUseCase;
     private final GetMyUserProfileUseCase getMyUserProfileUseCase;
 
-    @GetMapping("/user/profile/{nickname}")
+    @GetMapping("/profile/{nickname}")
     public ResponseEntity<GetUserProfileResponse> getUserProfile(
             @PathVariable @NotNull(message = "닉네임은 필수 값입니다.") String nickname,
             @AuthenticationPrincipal UserId requestUserId) {
@@ -38,7 +39,7 @@ public class UserQueryController {
                 .build());
     }
 
-    @GetMapping("/user/me")
+    @GetMapping("/me")
     public ResponseEntity<GetMyUserProfileResponse> getMyUserProfile(
             @AuthenticationPrincipal UserId userId) {
         GetMyUserProfileResult result = getMyUserProfileUseCase.getMyUserProfile(GetMyUserProfileQuery.of(userId));
