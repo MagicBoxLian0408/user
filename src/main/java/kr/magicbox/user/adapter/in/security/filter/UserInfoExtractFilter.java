@@ -25,7 +25,7 @@ public class UserInfoExtractFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
-        log.info("[UserInfoExtractFilter] clientIp={}, trustedIps={}", clientIp, trustedIpProperties.getIps());
+        log.debug("[UserInfoExtractFilter] clientIp={}, trusted={}", clientIp, trustedIpProperties.getIps().contains(clientIp));
 
         if (!trustedIpProperties.getIps().contains(clientIp)) {
             filterChain.doFilter(request, response);

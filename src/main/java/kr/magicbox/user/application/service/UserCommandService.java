@@ -47,11 +47,13 @@ public class UserCommandService implements UserCommandUseCase {
 
         ProfileSnapshot after = new ProfileSnapshot(user.getNickname(), user.getProfile());
 
-        userOutboxPort.save(UserProfileUpdatedEvent.builder()
-                .userId(userId)
-                .before(before)
-                .after(after)
-                .occurredAt(Instant.now())
-                .build());
+        if (!before.equals(after)) {
+            userOutboxPort.save(UserProfileUpdatedEvent.builder()
+                    .userId(userId)
+                    .before(before)
+                    .after(after)
+                    .occurredAt(Instant.now())
+                    .build());
+        }
     }
 }
