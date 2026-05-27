@@ -10,7 +10,8 @@ public enum UserDomainEventType {
     USER_WITHDRAWN("user-withdrawn"),
     USER_BANNED("user-banned"),
     USER_UNBANNED("user-unbanned"),
-    USER_SIGNUP("user-signup");
+    USER_SIGNUP("user-signup"),
+    USER_PROFILE_UPDATED("user-profile-updated");
 
     private final String value;
 }
