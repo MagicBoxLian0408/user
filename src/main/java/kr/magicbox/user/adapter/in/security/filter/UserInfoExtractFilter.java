@@ -10,9 +10,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,9 +27,9 @@ public class UserInfoExtractFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
-        log.debug("[UserInfoExtractFilter] clientIp={}, trusted={}", clientIp, trustedIpProperties.getIps().contains(clientIp));
+        log.debug("[UserInfoExtractFilter] clientIp={}, trusted={}", clientIp, isTrustedIp(clientIp, trustedIpProperties.getIps()));
 
-        if (!trustedIpProperties.getIps().contains(clientIp)) {
+        if (!isTrustedIp(clientIp, trustedIpProperties.getIps())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,6 +48,12 @@ public class UserInfoExtractFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private boolean isTrustedIp(String clientIp, List<String> trustedIps) {
+        return trustedIps.stream()
+                .anyMatch(trusted -> new IpAddressMatcher(trusted).matches(clientIp));
     }
 
     private boolean isValidUserId(String userIdRequestHeader) {
