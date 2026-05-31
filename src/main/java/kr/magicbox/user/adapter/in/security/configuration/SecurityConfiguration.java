@@ -1,8 +1,6 @@
 package kr.magicbox.user.adapter.in.security.configuration;
 
 import kr.magicbox.user.adapter.in.security.filter.UserInfoExtractFilter;
-import kr.magicbox.user.adapter.in.security.properties.TrustedIpProperties;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,11 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfiguration {
-
-    private final TrustedIpProperties trustedIpProperties;
-
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -32,7 +26,7 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new UserInfoExtractFilter(trustedIpProperties), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new UserInfoExtractFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .build();
     }
