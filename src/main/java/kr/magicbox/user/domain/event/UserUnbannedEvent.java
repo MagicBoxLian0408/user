@@ -8,6 +8,7 @@ import java.time.Instant;
 
 @Builder
 public record UserUnbannedEvent(
+        @JsonProperty("event_id") Long eventId,
         @JsonProperty("user_id") UserId userId,
         @JsonProperty("occurred_at") Instant occurredAt
 ) implements UserDomainEvent {

@@ -8,8 +8,9 @@ import java.time.Instant;
 
 @Builder
 public record UserWithdrawnEvent(
-        UserId userId,
-        Instant occurredAt
+        @JsonProperty("event_id") Long eventId,
+        @JsonProperty("user_id") UserId userId,
+        @JsonProperty("occurred_at") Instant occurredAt
 ) implements UserDomainEvent {
 
     @Override
