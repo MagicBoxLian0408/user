@@ -30,6 +30,7 @@ public class BanUserService implements BanUserUseCase {
         userRepositoryPort.update(user);
 
         UserBannedEvent event = UserBannedEvent.builder()
+                .eventId(user.getId().value())
                 .userId(user.getId())
                 .occurredAt(Instant.now())
                 .build();

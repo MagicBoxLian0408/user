@@ -65,6 +65,7 @@ public class LoginService implements LoadUserCredentialUseCase {
         User saved = userRepository.save(user);
 
         UserSignupEvent userSignupEvent = UserSignupEvent.builder()
+                .eventId(saved.getId().value())
                 .userId(saved.getId())
                 .occurredAt(Instant.now())
                 .build();

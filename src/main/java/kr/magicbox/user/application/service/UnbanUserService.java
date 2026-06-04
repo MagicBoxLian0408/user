@@ -30,6 +30,7 @@ public class UnbanUserService implements UnbanUserUseCase {
         userRepositoryPort.update(user);
 
         UserUnbannedEvent event = UserUnbannedEvent.builder()
+                .eventId(user.getId().value())
                 .userId(user.getId())
                 .occurredAt(Instant.now())
                 .build();

@@ -31,6 +31,7 @@ public class WithdrawUserService implements WithdrawUserUseCase {
 
         eventRepositoryPort.save(
                 UserWithdrawnEvent.builder()
+                        .eventId(command.userId().value())
                         .userId(command.userId())
                         .occurredAt(Instant.now())
                         .build()
