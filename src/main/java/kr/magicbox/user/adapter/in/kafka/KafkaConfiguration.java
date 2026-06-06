@@ -1,6 +1,7 @@
 package kr.magicbox.user.adapter.in.kafka;
 
 import kr.magicbox.user.adapter.in.kafka.properties.InboxProperties;
+import kr.magicbox.user.global.properties.UserProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @EnableKafkaRetryTopic
 @Configuration
-@EnableConfigurationProperties(InboxProperties.class)
+@EnableConfigurationProperties({InboxProperties.class, UserProperties.class})
 public class KafkaConfiguration {
 
     @Value("${spring.kafka.bootstrap-servers}")
