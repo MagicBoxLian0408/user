@@ -10,9 +10,11 @@ import kr.magicbox.user.application.port.in.ManageUserSessionUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import kr.magicbox.user.global.exception.BusinessException;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.kafka.retrytopic.DltStrategy;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -24,7 +26,7 @@ public class AuthEventKafkaListener {
     private final UserInboxRepository userInboxRepository;
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.user-logged-in", groupId = "user-service")
     public void handleLoginEvent(ConsumerRecord<String, LoginEvent> record) {
         LoginEvent event = record.value();
@@ -32,7 +34,7 @@ public class AuthEventKafkaListener {
     }
 
     @Idempotent
-    @RetryableTopic
+    @RetryableTopic(dltStrategy = DltStrategy.FAIL_ON_ERROR, dltTopicSuffix = "-dlt", exclude = {BusinessException.class})
     @KafkaListener(topics = "outbox.event.user-logged-out", groupId = "user-service")
     public void handleLogoutEvent(ConsumerRecord<String, LogoutEvent> record) {
         LogoutEvent event = record.value();
