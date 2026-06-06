@@ -35,6 +35,11 @@ spring:
     hibernate:
       ddl-auto: update
 
+security:
+  trusted:
+    ips:
+      - ${TRUSTED_IP_GATEWAY}
+
 user:
   default-profile-image-url: ${USER_PROFILE_DEFAULT_IMAGE_URL}
 
