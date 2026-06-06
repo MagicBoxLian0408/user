@@ -10,8 +10,20 @@ ext {
     springGrpcVersion = "1.0.2"
     springCloudVersion = "2025.1.0"
 }
+group = 'kr.magicbox'
 version = '0.0.1'
 description = 'user'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://jitpack.io' }
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
