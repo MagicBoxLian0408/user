@@ -46,10 +46,6 @@ spring:
           delay: 1s
         attempts: 5
 
-security:
-  trusted:
-    ips:
-      - ${TRUSTED_IP_GATEWAY}
 
 resilience4j:
   circuitbreaker:
