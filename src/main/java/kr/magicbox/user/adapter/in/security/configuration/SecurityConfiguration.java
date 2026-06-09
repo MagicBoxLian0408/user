@@ -1,6 +1,8 @@
 package kr.magicbox.user.adapter.in.security.configuration;
 
 import kr.magicbox.user.adapter.in.security.filter.UserInfoExtractFilter;
+import kr.magicbox.user.global.properties.UserProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(UserProperties.class)
 public class SecurityConfiguration {
 
     @Bean
