@@ -22,7 +22,7 @@ public class User {
     private Nickname nickname;
     private final String email;
     private UserStatus status;
-    private final UserRole role;
+    private UserRole role;
     private Instant lastLoginAt;
     private String profile;
     private Duration totalUsageTime;
@@ -158,5 +158,9 @@ public class User {
         if (!UserStatus.ACTIVE.equals(this.status)) throw new UserNotActiveForDeletionException();
         this.isActive = false;
         this.status = UserStatus.DELETED;
+    }
+
+    public void promoteToCreator() {
+        this.role = UserRole.CREATOR;
     }
 }
