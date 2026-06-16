@@ -6,6 +6,7 @@ import kr.magicbox.user.application.dto.command.LoadUserCredentialCommand;
 import kr.magicbox.user.application.dto.result.LoadUserCredentialResult;
 import kr.magicbox.user.application.port.in.CheckUserActiveUseCase;
 import kr.magicbox.user.application.port.in.GetUserNicknameUseCase;
+import kr.magicbox.user.application.port.in.GetUserProfileImageUrlUseCase;
 import kr.magicbox.user.application.port.in.LoadUserCredentialUseCase;
 import kr.magicbox.user.domain.enums.OAuth2Provider;
 import kr.magicbox.user.domain.enums.UserRole;
@@ -22,6 +23,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     private final LoadUserCredentialUseCase loadUserCredentialUseCase;
     private final CheckUserActiveUseCase checkUserActiveUseCase;
     private final GetUserNicknameUseCase getUserNicknameUseCase;
+    private final GetUserProfileImageUrlUseCase getUserProfileImageUrlUseCase;
 
     @Override
     public void loadUserCredential(LoadUserCredentialRequest request,
@@ -60,6 +62,17 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
         responseObserver.onNext(GetUserNicknameResponse.newBuilder()
                 .setNickname(nickname)
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getUserProfileImageUrl(GetUserProfileImageUrlRequest request,
+                                       StreamObserver<GetUserProfileImageUrlResponse> responseObserver) {
+        String profileImageUrl = getUserProfileImageUrlUseCase.getUserProfileImageUrl(UserId.of(request.getUserId()));
+
+        responseObserver.onNext(GetUserProfileImageUrlResponse.newBuilder()
+                .setProfileImageUrl(profileImageUrl != null ? profileImageUrl : "")
                 .build());
         responseObserver.onCompleted();
     }
