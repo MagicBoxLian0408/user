@@ -11,6 +11,9 @@ import kr.magicbox.user.domain.vo.UserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -51,5 +54,15 @@ public class UserJpaAdapter implements UserRepositoryPort {
                     userMapper.updateEntity(user, entity);
                     userJpaRepository.save(entity);
                 });
+    }
+
+    @Override
+    public Map<Long, String> getNicknamesByIds(List<Long> userIds) {
+        List<Object[]> rows = userJpaRepository.findNicknamesByIds(userIds);
+        Map<Long, String> result = new HashMap<>();
+        for (Object[] row : rows) {
+            result.put((Long) row[0], (String) row[1]);
+        }
+        return result;
     }
 }

@@ -6,12 +6,16 @@ import kr.magicbox.user.application.dto.command.LoadUserCredentialCommand;
 import kr.magicbox.user.application.dto.result.LoadUserCredentialResult;
 import kr.magicbox.user.application.port.in.CheckUserActiveUseCase;
 import kr.magicbox.user.application.port.in.GetUserNicknameUseCase;
+import kr.magicbox.user.application.port.in.GetUserNicknamesBatchUseCase;
 import kr.magicbox.user.application.port.in.GetUserProfileImageUrlUseCase;
 import kr.magicbox.user.application.port.in.LoadUserCredentialUseCase;
 import kr.magicbox.user.domain.enums.OAuth2Provider;
 import kr.magicbox.user.domain.enums.UserRole;
 import kr.magicbox.user.domain.vo.UserId;
 import kr.magicbox.user.grpc.user.*;
+
+import java.util.List;
+import java.util.Map;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
@@ -23,6 +27,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
     private final LoadUserCredentialUseCase loadUserCredentialUseCase;
     private final CheckUserActiveUseCase checkUserActiveUseCase;
     private final GetUserNicknameUseCase getUserNicknameUseCase;
+    private final GetUserNicknamesBatchUseCase getUserNicknamesBatchUseCase;
     private final GetUserProfileImageUrlUseCase getUserProfileImageUrlUseCase;
 
     @Override
@@ -62,6 +67,20 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
         responseObserver.onNext(GetUserNicknameResponse.newBuilder()
                 .setNickname(nickname)
+                .build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getUserNicknamesBatch(GetUserNicknamesBatchRequest request,
+                                      StreamObserver<GetUserNicknamesBatchResponse> responseObserver) {
+        List<UserId> userIds = request.getUserIdsList().stream()
+                .map(UserId::of)
+                .toList();
+        Map<Long, String> nicknames = getUserNicknamesBatchUseCase.getUserNicknamesBatch(userIds);
+
+        responseObserver.onNext(GetUserNicknamesBatchResponse.newBuilder()
+                .putAllNicknames(nicknames)
                 .build());
         responseObserver.onCompleted();
     }
