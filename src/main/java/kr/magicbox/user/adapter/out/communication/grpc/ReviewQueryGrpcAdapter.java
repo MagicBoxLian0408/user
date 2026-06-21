@@ -36,15 +36,17 @@ public class ReviewQueryGrpcAdapter implements ReviewQueryPort {
             .build();
 
         ManagedChannel channel = grpcChannelFactory.createChannel(ServiceHost.REVIEW.getHostName());
-        ReviewServiceGrpc.ReviewServiceFutureStub reviewStub = ReviewServiceGrpc.newFutureStub(channel);
-        ListenableFuture<GetAllReviewsByUserIdResponse> future = reviewStub.getAllReviewsByUserId(request);
+        ReviewServiceGrpc.ReviewServiceFutureStub stub = ReviewServiceGrpc.newFutureStub(channel);
+        ListenableFuture<GetAllReviewsByUserIdResponse> future = stub.getAllReviewsByUserId(request);
 
         CompletableFuture<List<UserReviewResult>> result = new CompletableFuture<>();
         future.addListener(() -> {
             try {
-                result.complete(future.get().getReviewsList().stream()
-                    .map(this::convertToUserReviewDto)
-                    .toList());
+                result.complete(
+                    future.get().getReviewsList().stream()
+                        .map(this::convertToUserReviewDto)
+                        .toList()
+                );
             } catch (Exception e) {
                 result.completeExceptionally(e);
             }
