@@ -1,6 +1,8 @@
 package kr.magicbox.user.adapter.out.communication.grpc;
 
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import io.grpc.ManagedChannel;
@@ -38,19 +40,12 @@ public class ReviewQueryGrpcAdapter implements ReviewQueryPort {
         ManagedChannel channel = grpcChannelFactory.createChannel(ServiceHost.REVIEW.getHostName());
         ReviewServiceGrpc.ReviewServiceFutureStub reviewStub = ReviewServiceGrpc.newFutureStub(channel);
         ListenableFuture<GetAllReviewsByUserIdResponse> future = reviewStub.getAllReviewsByUserId(request);
-        GetAllReviewsByUserIdResponse response;
-        try {
-            response = future.get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        } catch (java.util.concurrent.ExecutionException e) {
-            throw new RuntimeException(e.getCause());
-        }
 
-        return CompletableFuture.completedFuture(response.getReviewsList().stream()
-            .map(this::convertToUserReviewDto)
-            .toList());
+        return Futures.toCompletableFuture(
+            Futures.transform(future,
+                r -> r.getReviewsList().stream().map(this::convertToUserReviewDto).toList(),
+                MoreExecutors.directExecutor())
+        );
     }
 
     @SuppressWarnings("unused")
