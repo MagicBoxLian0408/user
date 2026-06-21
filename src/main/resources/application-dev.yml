@@ -35,13 +35,18 @@ spring:
     hibernate:
       ddl-auto: update
 
+security:
+  trusted:
+    ips:
+      - ${TRUSTED_IP_GATEWAY}
+
 user:
   default-profile-image-url: ${USER_PROFILE_DEFAULT_IMAGE_URL}
 
 resilience4j:
   circuitbreaker:
     instances:
-      review:
+      reviewService:
         register-health-indicator: true
         sliding-window-type: COUNT_BASED
         sliding-window-size: 10
@@ -51,7 +56,7 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
   timelimiter:
     instances:
-      review:
+      reviewService:
         timeout-duration: 2s
 
 inbox:
