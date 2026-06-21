@@ -28,7 +28,7 @@ public class UserQueryService implements UserQueryUseCase {
                 .orElseThrow(UserNotFoundException::new);
 
         List<UserReviewResult> reviews = user.canShowReview() ?
-                reviewQueryPort.getAllReviewsByUserId(user.getId().value()) : Collections.emptyList();
+                reviewQueryPort.getAllReviewsByUserId(user.getId().value()).join() : Collections.emptyList();
         return GetUserProfileResult.builder()
                 .profile(user.getProfile())
                 .nickname(user.getNickname())
