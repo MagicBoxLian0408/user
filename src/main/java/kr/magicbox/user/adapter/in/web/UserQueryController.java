@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/user/profile")
 @RequiredArgsConstructor
 public class UserQueryController {
     private final UserQueryUseCase userQueryUseCase;
