@@ -44,7 +44,7 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      review:
+      reviewService:
         register-health-indicator: true
         sliding-window-type: COUNT_BASED
         sliding-window-size: 10
@@ -54,7 +54,7 @@ resilience4j:
         permitted-number-of-calls-in-half-open-state: 3
   timelimiter:
     instances:
-      review:
+      reviewService:
         timeout-duration: 2s
 
 server:

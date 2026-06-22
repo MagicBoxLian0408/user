@@ -29,7 +29,7 @@ public class GetMyProfileService implements GetMyProfileUseCase {
                 .orElseThrow(UserNotFoundException::new);
 
         List<UserReviewResult> reviews = user.canShowReview() ?
-                reviewQueryPort.getAllReviewsByUserId(user.getId().value()) : Collections.emptyList();
+                reviewQueryPort.getAllReviewsByUserId(user.getId().value()).join() : Collections.emptyList();
 
         return GetUserProfileResult.builder()
                 .profile(user.getProfile())

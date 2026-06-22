@@ -20,8 +20,8 @@ public class WithdrawUserService implements WithdrawUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final UserOutboxPort eventRepositoryPort;
 
-    @Transactional
     @Override
+    @Transactional
     public void withdrawUser(WithdrawUserCommand command) {
         User user = userRepositoryPort.getUserById(command.userId())
                 .orElseThrow(UserNotFoundException::new);
