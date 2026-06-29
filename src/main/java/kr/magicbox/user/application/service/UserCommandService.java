@@ -2,8 +2,10 @@ package kr.magicbox.user.application.service;
 
 import kr.magicbox.user.application.dto.command.UpdateUserProfileCommand;
 import kr.magicbox.user.application.port.in.UserCommandUseCase;
+import kr.magicbox.user.application.port.out.UserOutboxPort;
 import kr.magicbox.user.application.port.out.UserRepositoryPort;
 import kr.magicbox.user.domain.aggregate.User;
+import kr.magicbox.user.domain.event.UserProfileUpdatedEvent;
 import kr.magicbox.user.domain.exception.DuplicateNicknameException;
 import kr.magicbox.user.domain.exception.UserNotFoundException;
 import kr.magicbox.user.domain.vo.UserId;
@@ -11,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class UserCommandService implements UserCommandUseCase {
     private final UserRepositoryPort userRepositoryPort;
+    private final UserOutboxPort userOutboxPort;
 
     @Override
     @Transactional
@@ -29,6 +34,11 @@ public class UserCommandService implements UserCommandUseCase {
                     .ifPresent(found -> { throw new DuplicateNicknameException(command.nickname()); });
         }
 
+        UserProfileUpdatedEvent.ProfileSnapshot before = new UserProfileUpdatedEvent.ProfileSnapshot(
+                user.getNickname(),
+                user.getProfile()
+        );
+
         user.updateProfile(
                 command.nickname() != null ? command.nickname() : null,
                 command.profile(),
@@ -36,5 +46,17 @@ public class UserCommandService implements UserCommandUseCase {
         );
 
         userRepositoryPort.update(user);
+
+        UserProfileUpdatedEvent.ProfileSnapshot after = new UserProfileUpdatedEvent.ProfileSnapshot(
+                user.getNickname(),
+                user.getProfile()
+        );
+
+        userOutboxPort.save(UserProfileUpdatedEvent.builder()
+                .userId(userId)
+                .before(before)
+                .after(after)
+                .occurredAt(Instant.now())
+                .build());
     }
 }

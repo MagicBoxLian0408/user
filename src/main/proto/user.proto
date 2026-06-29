@@ -10,6 +10,8 @@ service UserService {
   rpc LoadUserCredential(LoadUserCredentialRequest) returns (LoadUserCredentialResponse);
   rpc CheckUserActive(CheckUserActiveRequest) returns (CheckUserActiveResponse);
   rpc GetUserNickname(GetUserNicknameRequest) returns (GetUserNicknameResponse);
+  rpc GetUserProfileImageUrl(GetUserProfileImageUrlRequest) returns (GetUserProfileImageUrlResponse);
+  rpc GetUserNicknamesBatch(GetUserNicknamesBatchRequest) returns (GetUserNicknamesBatchResponse);
 }
 
 message LoadUserCredentialRequest {
@@ -38,6 +40,22 @@ message GetUserNicknameRequest {
 
 message GetUserNicknameResponse {
   string nickname = 1;
+}
+
+message GetUserProfileImageUrlRequest {
+  int64 user_id = 1;
+}
+
+message GetUserProfileImageUrlResponse {
+  string profile_image_url = 1;
+}
+
+message GetUserNicknamesBatchRequest {
+  repeated int64 user_ids = 1;
+}
+
+message GetUserNicknamesBatchResponse {
+  map<int64, string> nicknames = 1;
 }
 
 enum GrpcUserRole {
